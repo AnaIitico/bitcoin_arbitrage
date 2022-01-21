@@ -109,15 +109,72 @@ This project is an app that sorts through historical trade data for Bitcoin on t
 <!-- ROADMAP -->
 ## Roadmap
 
-<!-- Here are some screenshots and code snippets of the working app -->
+Here are some screenshots and code snippets of the working app
 
-<!-- #### nnnnnn - nnnnnn
-![nnnnnn Screen Shot][nnnnnn-screenshot]
+#### Exchange Comparison January 2018
+![Exchange January Screen Shot][exchange-january-screenshot]
 
-#### nnnnn Snippet
+#### Exchange Comparison March 2018 - With Analysis
+![Exchange March Screen Shot][exchange-march-screenshot]
+
+
+#### Calculate Arbitrage Profits Snippet - for January 16 only
+#### you can see the full code (with outputs) in the [crypto_arbitrage.ipynb](https://github.com/AnaIitico/bitcoin_arbitrage/blob/main/crypto_arbitrage.ipynb) file
+  *This code has been summarized into one block for convenience*
+  *and there's an analysis at the end*
 ```sh
-   some cool code goes here
-   ``` -->
+  # For the date early in the dataset, measure the arbitrage spread between the two exchanges
+  # by subtracting the lower-priced exchange from the higher-priced one
+  arbitrage_spread_early=coinbase['Close'].loc['2018-01-16']-bitstamp['Close'].loc['2018-01-16']
+  arbitrage_spread_early = arbitrage_spread_early[arbitrage_spread_early>0]
+  # Use a conditional statement to generate the summary statistics for each arbitrage_spread DataFrame
+  arbitrage_spread_early.describe()
+
+  # For the date early in the dataset, calculate the spread returns by dividing the instances when the
+  # arbitrage spread is positive (> 0) 
+  # by the price of Bitcoin from the exchange you are buying on (the lower-priced exchange).
+  spread_return_early=arbitrage_spread_early/bitstamp['Close'].loc['2018-01-16']
+  # Review the spread return DataFrame
+  spread_return_early.head()
+
+  # For the date early in the dataset, determine the number of times your trades with positive returns 
+  # exceed the 1% minimum threshold (.01) that you need to cover your costs
+  profitable_trades_early=spread_return_early[spread_return_early>.01]
+  # Review the first five profitable trades
+  profitable_trades_early.head()
+
+  # For the date early in the dataset, generate the summary statistics for the profitable trades
+  # or you trades where the spread returns are are greater than 1%
+  profitable_trades_early.describe()
+
+  # For the date early in the dataset, calculate the potential profit per trade in dollars 
+  # Multiply the profitable trades by the cost of the Bitcoin that was purchased
+  profit_early=profitable_trades_early * bitstamp['Close'].loc['2018-01-16']
+  # Drop any missing values from the profit DataFrame
+  profit_per_trade_early=profit_early.dropna()
+  # View the early profit DataFrame
+  profit_per_trade_early
+
+  # Generate the summary statistics for the early profit per trade DataFrame
+  profit_per_trade_early.describe()
+
+  # Plot the results for the early profit per trade DataFrame
+  profit_per_trade_early.plot(figsize=(10, 7), title="Profit Per Trade - Jan 16")
+
+  # Calculate the sum of the potential profits for the early profit per trade DataFrame
+  profit_sum_early=profit_per_trade_early.sum()
+  profit_sum_early
+
+  # Use the cumsum function to calculate the cumulative profits over time for the early profit per
+  # trade DataFrame
+  cumulative_profit_early=profit_per_trade_early.cumsum()
+  # Plot the cumulative sum of profits for the early profit per trade DataFrame
+  cumulative_profit_early.plot(figsize=(10, 7), title="Cumulative Sum - January 16")
+
+  #**Answer:** The profit information supports the trend in the narrowing of the spread
+  #from January to March. As the spread narrows, so does the opportunity for profit,
+  #as it is evident in the calculated results.
+ ```
 
 See the [open issues](https://github.com/AnaIitico/bitcoin_arbitrage/issues) for a list of proposed features (and known issues).
 
@@ -165,7 +222,5 @@ Project Link: [https://github.com/AnaIitico/bitcoin_arbitrage](https://github.co
 [license-url]:  -->
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/in/josetollinchi/
-[confirm-screenshot]: /images/confirm.JPG
-<!-- [-screenshot]: /images/
-[-screenshot]: /images/
-[-screenshot]: /images/ -->
+[exchange-january-screenshot]: /images/exchange_january_2018.JPG
+[exchange-march-screenshot]: /images/exchange_march_2018.JPG
